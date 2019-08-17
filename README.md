@@ -1,5 +1,5 @@
 # socket-echo-app
-This program provides a simple example of libevent and its useful for socket programming either blocking and non blocking
+This program provides a simple education of event programming in C and its useful either blocking and non blocking
 
 How to build:
 First simply run the inst-script.sh script 
