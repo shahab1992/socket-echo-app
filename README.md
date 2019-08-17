@@ -2,7 +2,8 @@
 This program provides a simple example of libevent and its useful for socket programming either blocking and non blocking
 
 How to build:
-Simply by running: make all
+First simply run the inst-script.sh script 
+Then by running: make all
 
 Usage:
 To use the program you can simply run the following command in two different terminals:
