@@ -72,6 +72,7 @@ static void event_change (int ident, int filter, int flags, void *udata) {
   }
 
   int index = events_used++;
+  
   e = &events[index];
 
   e->ident = ident;
@@ -168,7 +169,7 @@ static int event_on_accept (struct event_data *self, struct kevent *event) {
   int client_fd = accept(server_fd, &client, &client_len);
   int flags;
   int err;
-
+   
   if (client_fd < 0) {
     if (errno == EWOULDBLOCK || errno == EAGAIN) return 0;
     on_error("Accept failed (should this be fatal?): %s\n", strerror(errno));
