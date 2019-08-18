@@ -12,12 +12,21 @@ int main() {
   int listen_socket_fd = guard(socket(AF_INET, SOCK_STREAM, 0), "could not create TCP listening socket");
   int flags = guard(fcntl(listen_socket_fd, F_GETFL), "could not get flags on TCP listening socket");
 
-  guard(fcntl(listen_socket_fd, F_SETFL, flags | O_NONBLOCK), "could not set TCP listening socket to be non-blocking");
+  struct timeval tv;
+
+  guard(fcntl(listen_socket_fd, F_SETFL, flags | O_NONBLOCK ), "could not set TCP listening socket to be non-blocking");
 
   struct sockaddr_in addr;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(8080);
   addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+  tv.tv_sec = 5;
+  tv.tv_usec = 0;
+  if (setsockopt( listen_socket_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&tv,  sizeof tv))
+         exit( -1 );
+ 
+
 
   guard(bind(listen_socket_fd, (struct sockaddr *) &addr, sizeof(addr)), "could not bind");
   guard(listen(listen_socket_fd, 100), "could not listen");
@@ -25,21 +34,28 @@ int main() {
 
   for (;;) {
     int client_socket_fd = accept(listen_socket_fd, NULL, NULL);
+  
     if (client_socket_fd == -1) {
-      if (errno == EWOULDBLOCK) {
-        printf("No pending connections; sleeping for one second.\n");
+        if (errno == EWOULDBLOCK) {
+           
+    printf("No pending connections; sleeping for one second.\n");
         sleep(1);
       } else {
-        perror("error when accepting connection");
+      
+    perror("error when accepting connection");
         exit(1);
       }
     } else {
-      char msg[] = "hello\n";
+         char msg[] = "hello\n";
       printf("Got a connection; writing 'hello' then closing.\n");
       send(client_socket_fd, msg, sizeof(msg), 0);
       close(client_socket_fd);
-    }
+   }
+  
   }
+
+  
+
   return EXIT_SUCCESS;
 }
 
