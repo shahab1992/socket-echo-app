@@ -1,4 +1,7 @@
-all: bin/unix-echo-server bin/tcp-echo-server bin/simple-non-blocking bin/tcp-non-blocking-echo-server bin/unix-non-blocking-echo-server
+all: bin/simple-select bin/unix-echo-server bin/tcp-echo-server bin/simple-non-blocking bin/tcp-non-blocking-echo-server bin/unix-non-blocking-echo-server
+
+bin/simple-select: simple-select.c
+	gcc simple-select.c -o bin/simple-select
 
 bin/unix-echo-server: unix-echo-server.c
 	gcc unix-echo-server.c -o bin/unix-echo-server

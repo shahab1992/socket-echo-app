@@ -21,11 +21,11 @@ int main() {
   addr.sin_port = htons(8080);
   addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  tv.tv_sec = 5;
-  tv.tv_usec = 0;
-  if (setsockopt( listen_socket_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&tv,  sizeof tv))
-         exit( -1 );
- 
+//  tv.tv_sec = 5;
+//  tv.tv_usec = 0;
+//  if (setsockopt( listen_socket_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&tv,  sizeof tv))
+//         exit( -1 );
+// 
 
 
   guard(bind(listen_socket_fd, (struct sockaddr *) &addr, sizeof(addr)), "could not bind");
@@ -34,7 +34,9 @@ int main() {
 
   for (;;) {
     int client_socket_fd = accept(listen_socket_fd, NULL, NULL);
-  
+   tv.tv_sec = 5;
+  tv.tv_usec = 0;
+ 
     if (client_socket_fd == -1) {
         if (errno == EWOULDBLOCK) {
            
@@ -48,7 +50,11 @@ int main() {
     } else {
          char msg[] = "hello\n";
       printf("Got a connection; writing 'hello' then closing.\n");
-      send(client_socket_fd, msg, sizeof(msg), 0);
+   if (setsockopt( client_socket_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&tv,  sizeof tv))
+         exit( -1 );
+ 
+
+     send(client_socket_fd, msg, sizeof(msg), 0);
       close(client_socket_fd);
    }
   
